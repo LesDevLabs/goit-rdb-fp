@@ -1,3 +1,6 @@
+``` SQL
+
+
 drop schema if exists pandemic;
 
 create schema pandemic;
@@ -79,3 +82,6 @@ select year_diff_from_today(1990);  -- 36
 
 select year_diff_from_today(Year)
 from infectious_cases;
+
+
+```
