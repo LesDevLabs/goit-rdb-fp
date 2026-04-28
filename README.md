@@ -1,15 +1,15 @@
+
 ``` SQL
-
-
 drop schema if exists pandemic;
 
 create schema pandemic;
 
 use pandemic;
 
-select count(Entity) from infectious_cases;  -- 7271
-select count(*) from infectious_cases;  
+select count(*) from infectious_cases; 
 
+drop table if exists infectious_cases_norm;
+drop table if exists countries;
 
 create table countries (
   id     int auto_increment primary key,
@@ -36,17 +36,17 @@ alter table infectious_cases_norm
       foreign key (country_id) references countries(id);
 
 
-select count(id) from infectious_cases_norm; -- 7271
+select count(id) from infectious_cases_norm;
 
-describe infectious_cases;
+describe infectious_cases_norm;
 
-select 
-    c.entity,
+select
+	c.entity,
     c.code,
-    ceil(avg(ic.Number_rabies)) as avg_rabies,
-    ceil(min(ic.Number_rabies)) as min_rabies,
-    ceil(max(ic.Number_rabies)) as max_rabies,
-    ceil(sum(ic.Number_rabies)) as sum_rabies
+    avg(ic.Number_rabies) as avg_rabies,
+    min(ic.Number_rabies) as min_rabies,
+    max(ic.Number_rabies) as max_rabies,
+    sum(ic.Number_rabies) as sum_rabies
 from infectious_cases_norm as ic
 join countries as c on c.id = ic.country_id
 where ic.Number_rabies is not null and ic.Number_rabies != ''
@@ -60,10 +60,7 @@ select
     makedate(Year, 1) as year_start,
     curdate() as today,
     timestampdiff(year, makedate(Year, 1), curdate()) as years_diff
-from infectious_cases_norm
-limit 20;
-
-
+from infectious_cases_norm;
 
 
 drop function if exists year_diff_from_today;
@@ -78,10 +75,10 @@ end //
 delimiter ;
 
 
-select year_diff_from_today(1990);  -- 36 
+select year_diff_from_today(1990);
 
-select year_diff_from_today(Year)
-from infectious_cases;
-
+select distinct Year, year_diff_from_today(Year)
+from infectious_cases
+order by Year desc;
 
 ```
